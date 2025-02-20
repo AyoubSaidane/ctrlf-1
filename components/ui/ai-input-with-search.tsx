@@ -50,7 +50,7 @@ export function AIInputWithSearch({
 
   return (
     <div className={cn("w-full py-4", className)}>
-      <div className="relative max-w-xl w-full mx-auto">
+      <div className="relative w-full">
         <div className="relative flex flex-col">
           <div
             className="overflow-y-auto"
