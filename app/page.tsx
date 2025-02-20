@@ -4,6 +4,7 @@ import { AIInputWithSearch } from "@/components/ui/ai-input-with-search";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useId } from "react";
+import { AppCarousel } from "@/components/app-carousel";
 
 export default function Home() {
     const textareaId = useId();
@@ -32,6 +33,7 @@ export default function Home() {
                         placeholder="Leave a comment"
                     />
                 </div>
+                <AppCarousel />
             </div>
         </div>
     );
