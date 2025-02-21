@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useId } from "react";
 import { AppCarousel } from "@/components/app-carousel";
+import { ExpertsCarousel } from "@/components/experts-carousel";
+import { RelevantDocuments } from "@/components/relevant-documents";
 
 export default function Home() {
     const textareaId = useId();
@@ -24,7 +26,7 @@ export default function Home() {
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor={textareaId}>Answer</Label>
+                    <Label htmlFor={textareaId} className="text-xl font-bold">Answer</Label>
                     <Textarea
                         id={textareaId}
                         className="read-only:bg-muted w-full"
@@ -34,6 +36,8 @@ export default function Home() {
                     />
                 </div>
                 <AppCarousel />
+                <ExpertsCarousel />
+                <RelevantDocuments />
             </div>
         </div>
     );

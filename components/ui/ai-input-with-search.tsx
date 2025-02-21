@@ -60,7 +60,8 @@ export function AIInputWithSearch({
               id={id}
               value={value}
               placeholder={placeholder}
-              className="w-full rounded-xl rounded-b-none px-4 py-3 bg-black/5 dark:bg-white/5 border-none dark:text-white placeholder:text-black/70 dark:placeholder:text-white/70 resize-none focus-visible:ring-0 leading-[1.2]"
+              rows={1}
+              className="w-full rounded-xl rounded-b-none px-4 py-3 bg-black/5 dark:bg-white/5 border-none dark:text-white placeholder:text-black/70 dark:placeholder:text-white/70 resize-none focus-visible:ring-0 leading-[1.2] min-h-[48px]"
               ref={textareaRef}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
