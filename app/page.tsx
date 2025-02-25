@@ -59,7 +59,7 @@ export default function Home() {
                         placeholder={isLoading ? "Generating answer..." : "Your answer will appear here"}
                     />
                 </div>
-                <AppCarousel />
+                {documents.length > 0 && <AppCarousel documents={documents} />}
                 <ExpertsCarousel />
                 <RelevantDocuments documents={documents} />
             </div>

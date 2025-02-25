@@ -5,8 +5,14 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
+import { Document } from "@/api/types/api"
 
-export function AppCarousel() {
+interface AppCarouselProps {
+  documents: Document[]
+}
+
+export function AppCarousel({ documents }: AppCarouselProps) {
+  // The component will only be rendered when documents exist, so no need for placeholders
   return (
     <div className="w-full">
       <Carousel 
@@ -17,7 +23,7 @@ export function AppCarousel() {
         className="w-full"
       >
         <CarouselContent className="overflow-x-auto cursor-grab pb-4">
-          {Array.from({ length: 5 }).map((_, index) => (
+          {documents.map((doc, index) => (
             <CarouselItem 
               key={index} 
               className="md:basis-1/2 lg:basis-1/3"
@@ -27,9 +33,9 @@ export function AppCarousel() {
                 index === 0 ? "ml-0 mr-4" : "mx-2"
               )}>
                 <div className="p-4">
-                  <h3 className="font-semibold">Document {index + 1}</h3>
+                  <h3 className="font-semibold">{doc.title}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Related content preview...
+                    Page {doc.page}
                   </p>
                 </div>
               </div>
