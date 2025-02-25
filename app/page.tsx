@@ -3,6 +3,7 @@
 import { AIInputWithSearch } from "@/components/ui/ai-input-with-search";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useId, useState } from "react";
 import { AppCarousel } from "@/components/app-carousel";
 import { ExpertsCarousel } from "@/components/experts-carousel";
@@ -20,6 +21,9 @@ export default function Home() {
 
     const handleSubmit = async (value: string, withSearch: boolean) => {
         try {
+            // Clear documents and experts immediately when a new query is submitted
+            setDocuments([]);
+            setExperts([]);
             setIsLoading(true);
             setError(null);
             
@@ -53,13 +57,19 @@ export default function Home() {
                     {error && (
                         <div className="text-red-500 text-sm">{error}</div>
                     )}
-                    <Textarea
-                        id={textareaId}
-                        className="read-only:bg-muted w-full"
-                        value={answer}
-                        readOnly
-                        placeholder={isLoading ? "Generating answer..." : "Your answer will appear here"}
-                    />
+                    {isLoading ? (
+                        <div className="min-h-[80px] border rounded-md border-input bg-background px-3 py-2">
+                            <LoadingSpinner size="md" />
+                        </div>
+                    ) : (
+                        <Textarea
+                            id={textareaId}
+                            className="read-only:bg-muted w-full"
+                            value={answer}
+                            readOnly
+                            placeholder="Your answer will appear here"
+                        />
+                    )}
                 </div>
                 {documents.length > 0 && <AppCarousel documents={documents} />}
                 {experts.length > 0 && <ExpertsCarousel experts={experts} />}
