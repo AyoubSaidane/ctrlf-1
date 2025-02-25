@@ -1,11 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react';
-import { Document as PDFDocument, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
-
-// Set up the worker for PDF.js
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+import { renderPageToDataUrl, configurePdfjs } from '@/lib/pdf-service';
 
 interface PDFPagePreviewProps {
   url: string;
@@ -15,7 +10,49 @@ interface PDFPagePreviewProps {
 
 export function PDFPagePreview({ url, page, width = 200 }: PDFPagePreviewProps) {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Initialize PDF.js when component mounts
+    configurePdfjs();
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    const generatePreview = async () => {
+      if (!url || !page) return;
+      
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Calculate appropriate scale based on width
+        const scale = width / 600; // Approximate width of a PDF page at scale 1.0
+        const dataUrl = await renderPageToDataUrl({ url, page, scale });
+        
+        if (isMounted) {
+          setPreviewUrl(dataUrl);
+        }
+      } catch (err) {
+        console.error("PDF render error:", err);
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Failed to load PDF');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    generatePreview();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [url, page, width]);
 
   return (
     <div className="relative w-full h-full min-h-[200px] bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
@@ -27,26 +64,18 @@ export function PDFPagePreview({ url, page, width = 200 }: PDFPagePreviewProps) 
       
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-red-500">
-          <p className="text-sm">Failed to load PDF</p>
+          <p className="text-sm">{error}</p>
         </div>
       )}
       
-      <PDFDocument
-        file={url}
-        onLoadSuccess={() => setLoading(false)}
-        onLoadError={(error: Error) => {
-          console.error("PDF load error:", error);
-          setError(error);
-          setLoading(false);
-        }}
-      >
-        <Page 
-          pageNumber={page} 
-          width={width}
-          renderTextLayer={false}
-          renderAnnotationLayer={false}
+      {previewUrl && !loading && (
+        <img 
+          src={previewUrl}
+          alt={`Preview of page ${page}`}
+          className="max-w-full max-h-full object-contain"
+          style={{ maxWidth: `${width}px` }}
         />
-      </PDFDocument>
+      )}
     </div>
   );
 }
