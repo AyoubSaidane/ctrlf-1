@@ -14,6 +14,7 @@ export default function Home() {
     const textareaId = useId();
     const [answer, setAnswer] = useState("");
     const [documents, setDocuments] = useState<Document[]>([]);
+    const [experts, setExperts] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,6 +26,7 @@ export default function Home() {
             const response = await submitQuery({ query: value });
             setAnswer(response.parsedData.text);
             setDocuments(response.parsedData.documents);
+            setExperts(response.parsedData.experts);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
             console.error('Error:', err);
@@ -60,7 +62,7 @@ export default function Home() {
                     />
                 </div>
                 {documents.length > 0 && <AppCarousel documents={documents} />}
-                <ExpertsCarousel />
+                {experts.length > 0 && <ExpertsCarousel experts={experts} />}
                 <RelevantDocuments documents={documents} />
             </div>
         </div>
