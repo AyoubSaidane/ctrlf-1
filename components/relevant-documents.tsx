@@ -2,48 +2,33 @@
 
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { Document } from "@/api/types/api";
 
-// Example documents - replace with actual data
-const documents = [
-  {
-    name: "Research Paper on AI Ethics",
-    type: "PDF Document",
-    link: "https://example.com/ai-ethics.pdf"
-  },
-  {
-    name: "Machine Learning Guidelines",
-    type: "Word Document",
-    link: "https://example.com/ml-guidelines.docx"
-  },
-  {
-    name: "Data Science Best Practices",
-    type: "Web Article",
-    link: "https://example.com/data-science"
+interface RelevantDocumentsProps {
+  documents?: Document[];
+}
+
+export function RelevantDocuments({ documents = [] }: RelevantDocumentsProps) {
+  if (documents.length === 0) {
+    return null;
   }
-]
 
-export function RelevantDocuments() {
   return (
-    <div className="w-full">
-      <h2 className="text-xl font-bold mb-4">Relevant Documents</h2>
-      <div className="space-y-3">
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold">Relevant Documents</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {documents.map((doc, index) => (
-          <Link 
-            href={doc.link} 
+          <a
             key={index}
+            href={doc.url}
             target="_blank"
-            className="block"
+            rel="noopener noreferrer"
+            className="block p-4 rounded-lg border border-gray-200 hover:border-sky-500 transition-colors cursor-pointer"
           >
-            <div className={cn(
-              "p-4 border rounded-lg hover:bg-accent transition-colors",
-              "cursor-pointer"
-            )}>
-              <h3 className="font-semibold">{doc.name}</h3>
-              <p className="text-sm text-muted-foreground">{doc.type}</p>
-            </div>
-          </Link>
+            <h3 className="font-medium text-lg truncate">{doc.title}</h3>
+          </a>
         ))}
       </div>
     </div>
-  )
+  );
 }

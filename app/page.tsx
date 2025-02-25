@@ -8,10 +8,12 @@ import { AppCarousel } from "@/components/app-carousel";
 import { ExpertsCarousel } from "@/components/experts-carousel";
 import { RelevantDocuments } from "@/components/relevant-documents";
 import { submitQuery } from "@/api/services/api";
+import { ParsedResponse, Document} from "@/api/types/api";
 
 export default function Home() {
     const textareaId = useId();
     const [answer, setAnswer] = useState("");
+    const [documents, setDocuments] = useState<Document[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +24,7 @@ export default function Home() {
             
             const response = await submitQuery({ query: value });
             setAnswer(response.parsedData.text);
+            setDocuments(response.parsedData.documents);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
             console.error('Error:', err);
@@ -58,7 +61,7 @@ export default function Home() {
                 </div>
                 <AppCarousel />
                 <ExpertsCarousel />
-                <RelevantDocuments />
+                <RelevantDocuments documents={documents} />
             </div>
         </div>
     );
