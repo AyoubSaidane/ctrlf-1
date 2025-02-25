@@ -2,14 +2,14 @@
 
 import { AIInputWithSearch } from "@/components/ui/ai-input-with-search";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ExpandableTextArea } from "@/components/expandable-text-area";
 import { useId, useState } from "react";
 import { AppCarousel } from "@/components/app-carousel";
 import { ExpertsCarousel } from "@/components/experts-carousel";
 import { RelevantDocuments } from "@/components/relevant-documents";
 import { submitQuery } from "@/api/services/api";
-import { ParsedResponse, Document} from "@/api/types/api";
+import { Document} from "@/api/types/api";
 
 export default function Home() {
     const textareaId = useId();
@@ -62,12 +62,11 @@ export default function Home() {
                             <LoadingSpinner size="md" />
                         </div>
                     ) : (
-                        <Textarea
+                        <ExpandableTextArea
                             id={textareaId}
-                            className="read-only:bg-muted w-full"
                             value={answer}
-                            readOnly
                             placeholder="Your answer will appear here"
+                            maxHeight={200}
                         />
                     )}
                 </div>
