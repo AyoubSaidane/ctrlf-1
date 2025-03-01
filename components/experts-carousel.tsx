@@ -7,8 +7,15 @@ import {
 } from "@/components/ui/carousel"
 import Image from "next/image"
 
+interface Expert {
+  name: string;
+  email: string;
+  image: string;
+  documents: string[];
+}
+
 interface ExpertsCarouselProps {
-  experts: string[];
+  experts: Expert[];
 }
 
 export function ExpertsCarousel({ experts }: ExpertsCarouselProps) {
@@ -34,14 +41,14 @@ export function ExpertsCarousel({ experts }: ExpertsCarouselProps) {
               )}>
                 <div className="aspect-square relative">
                   <Image
-                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${index + 1}`}
-                    alt={`Expert ${expert}`}
+                    src={expert.image}
+                    alt={expert.name}
                     fill
                     className="object-cover"
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold">{expert}</h3>
+                  <h3 className="font-semibold">{expert.name}</h3>
                   <p className="text-sm text-muted-foreground">
                     Expert Resource
                   </p>

@@ -6,7 +6,7 @@ export async function submitQuery(request: QueryRequest): Promise<ProcessedQuery
   if (!API_URL) {
     throw new Error('API_URL is not defined');
   }
-
+  console.log('API_URL:', `${API_URL}/query`);
   const response = await fetch(`${API_URL}/query`, {
     method: 'POST',
     headers: {
@@ -14,7 +14,7 @@ export async function submitQuery(request: QueryRequest): Promise<ProcessedQuery
       'Accept': 'application/json'
     },
     body: JSON.stringify({
-      message: request.query  // Changed this line to directly use the query string
+      message: request.query
     }),
   });
 
@@ -23,10 +23,10 @@ export async function submitQuery(request: QueryRequest): Promise<ProcessedQuery
   }
 
   const rawResponse: QueryResponse = await response.json();
-  console.log('Raw response:', rawResponse); // Will show the string version
+  console.log('Raw response:', rawResponse);
 
-  const parsedData: ParsedResponse = JSON.parse(rawResponse.response);
-  console.log('Parsed data:', parsedData); // Will show the structured data
+  const parsedData: ParsedResponse = rawResponse.response;
+  console.log('Parsed data:', parsedData);
 
   return { parsedData };
 }

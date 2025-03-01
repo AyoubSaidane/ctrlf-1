@@ -8,10 +8,16 @@ export interface Document {
   page: number;
 }
 
+export interface Expert {
+  name: string;
+  email: string;
+  image: string;
+  documents: string[];
+}
+
 export interface ParsedResponse {
   text: string;
-  images: string[];
-  experts: string[];
+  experts: Expert[];
   documents: Document[];
 }
 
