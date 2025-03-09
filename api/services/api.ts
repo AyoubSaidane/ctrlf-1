@@ -1,20 +1,13 @@
 import { QueryRequest, QueryResponse, ProcessedQueryResponse, ParsedResponse } from '../types/api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 export async function submitQuery(request: QueryRequest): Promise<ProcessedQueryResponse> {
-  if (!API_URL) {
-    throw new Error('API_URL is not defined');
-  }
-
-  const response = await fetch(`${API_URL}/query`, {
+  const response = await fetch(`/api/query`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
     },
     body: JSON.stringify({
-      message: request.query  // Changed this line to directly use the query string
+      message: request.query
     }),
   });
 
@@ -23,10 +16,23 @@ export async function submitQuery(request: QueryRequest): Promise<ProcessedQuery
   }
 
   const rawResponse: QueryResponse = await response.json();
-  console.log('Raw response:', rawResponse); // Will show the string version
+  console.log('Raw response:', rawResponse);
 
-  const parsedData: ParsedResponse = JSON.parse(rawResponse.response);
-  console.log('Parsed data:', parsedData); // Will show the structured data
+  // Check if response is a string that needs to be parsed
+  let parsedData: ParsedResponse;
+  if (typeof rawResponse.response === 'string') {
+    try {
+      parsedData = JSON.parse(rawResponse.response);
+    } catch (error) {
+      // If parsing fails, use the response as is
+      parsedData = rawResponse.response as unknown as ParsedResponse;
+    }
+  } else {
+    // If it's already an object, use it directly
+    parsedData = rawResponse.response as ParsedResponse;
+  }
+  
+  console.log('Parsed data:', parsedData);
 
   return { parsedData };
 }

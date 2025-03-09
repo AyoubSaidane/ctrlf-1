@@ -36,12 +36,18 @@ export function PdfPreviewModal({ document, isOpen, onClose }: PdfPreviewModalPr
 
   const openFullDocument = () => {
     // Open the document at the specific page
-    window.open(`${document.url}#page=${currentPage}`, '_blank');
+    if (document.localPath) {
+      // For local files, we might need a different approach depending on your app's architecture
+      // This could open in a new tab if the file is accessible via URL, or use a custom viewer
+      window.open(`${document.localPath}`, '_blank');
+    } else {
+      window.open(`${document.url}#page=${currentPage}`, '_blank');
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] flex flex-col relative">
+    <div className="fixed inset-0 bg-blaTranscript_03_Orphan_Drug_Developmentck/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg w-[110vh] h-[90vh] flex flex-col relative">
         {/* Close button */}
         <button 
           onClick={onClose} 
@@ -60,8 +66,9 @@ export function PdfPreviewModal({ document, isOpen, onClose }: PdfPreviewModalPr
         <div className="flex-1 p-8 overflow-auto">
           <PDFPagePreview 
             url={document.url} 
+            localPath="/test/PDF_003_BCG-report-NYCHA-Key-Findings-and-Recommendations-8-15-12vFinal.pdf"
             page={currentPage} 
-            width={700} 
+            width={1200} 
           />
         </div>
         

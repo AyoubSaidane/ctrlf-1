@@ -4,11 +4,12 @@ import { renderPageToDataUrl, configurePdfjs } from '@/lib/pdf-service';
 
 interface PDFPagePreviewProps {
   url: string;
+  localPath?: string;
   page: number;
   width?: number;
 }
 
-export function PDFPagePreview({ url, page, width = 200 }: PDFPagePreviewProps) {
+export function PDFPagePreview({ url, localPath, page, width = 200 }: PDFPagePreviewProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -22,7 +23,12 @@ export function PDFPagePreview({ url, page, width = 200 }: PDFPagePreviewProps) 
     let isMounted = true;
     
     const generatePreview = async () => {
-      if (!url || !page) return;
+      if ((!url && !localPath) || !page) {
+        console.log("Missing required props:", { url, localPath, page });
+        return;
+      }
+      
+      console.log("Attempting to render PDF:", { url, localPath, page, width });
       
       try {
         setLoading(true);
@@ -30,7 +36,7 @@ export function PDFPagePreview({ url, page, width = 200 }: PDFPagePreviewProps) 
         
         // Calculate appropriate scale based on width
         const scale = width / 600; // Approximate width of a PDF page at scale 1.0
-        const dataUrl = await renderPageToDataUrl({ url, page, scale });
+        const dataUrl = await renderPageToDataUrl({ url, localPath, page, scale });
         
         if (isMounted) {
           setPreviewUrl(dataUrl);
@@ -52,7 +58,7 @@ export function PDFPagePreview({ url, page, width = 200 }: PDFPagePreviewProps) 
     return () => {
       isMounted = false;
     };
-  }, [url, page, width]);
+  }, [url, localPath, page, width]);
 
   return (
     <div className="relative w-full h-full min-h-[200px] bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">

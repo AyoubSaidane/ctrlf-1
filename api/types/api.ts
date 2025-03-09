@@ -5,12 +5,12 @@ export interface QueryRequest {
 export interface Document {
   title: string;
   url: string;
+  localPath: string;
   page: number;
 }
 
 export interface ParsedResponse {
   text: string;
-  images: string[];
   experts: string[];
   documents: Document[];
 }

@@ -71,7 +71,7 @@ export default function Home() {
                     )}
                 </div>
                 {documents.length > 0 && <AppCarousel documents={documents} />}
-                {experts.length > 0 && <ExpertsCarousel experts={experts} />}
+                {/* {experts.length > 0 && <ExpertsCarousel experts={experts} />} */}
                 <RelevantDocuments documents={documents} />
             </div>
         </div>

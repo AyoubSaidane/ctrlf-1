@@ -16,6 +16,17 @@ const nextConfig = {
     });
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://7990-157-131-222-207.ngrok-free.app/:path*',
+      },
+    ];
+  },
+  images: {
+    domains: ['api.dicebear.com'],
+  },
 }
 
 module.exports = nextConfig

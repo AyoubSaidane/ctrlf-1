@@ -51,7 +51,8 @@ export function AppCarousel({ documents }: AppCarouselProps) {
                 onClick={() => handleDocumentClick(doc)}
               >
                 <PDFPagePreview 
-                  url={doc.url} 
+                  url={doc.url}
+                  localPath="/test/PDF_003_BCG-report-NYCHA-Key-Findings-and-Recommendations-8-15-12vFinal.pdf"
                   page={doc.page} 
                   width={300}
                 />
