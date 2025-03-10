@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 import { renderPageToDataUrl, configurePdfjs } from '@/lib/pdf-service';
 
 interface PDFPagePreviewProps {
-  url: string;
+  url?: string;
   localPath?: string;
+  base64Data?: string;
   page: number;
   width?: number;
 }
 
-export function PDFPagePreview({ url, localPath, page, width = 200 }: PDFPagePreviewProps) {
+export function PDFPagePreview({ url, localPath, base64Data, page, width = 200 }: PDFPagePreviewProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -23,12 +24,12 @@ export function PDFPagePreview({ url, localPath, page, width = 200 }: PDFPagePre
     let isMounted = true;
     
     const generatePreview = async () => {
-      if ((!url && !localPath) || !page) {
-        console.log("Missing required props:", { url, localPath, page });
+      if ((!url && !localPath && !base64Data) || !page) {
+        console.log("Missing required props:", { url, localPath, base64Data, page });
         return;
       }
       
-      console.log("Attempting to render PDF:", { url, localPath, page, width });
+      console.log("Attempting to render PDF:", { url, localPath, base64Data: base64Data ? "base64 data present" : "none", page, width });
       
       try {
         setLoading(true);
@@ -36,7 +37,7 @@ export function PDFPagePreview({ url, localPath, page, width = 200 }: PDFPagePre
         
         // Calculate appropriate scale based on width
         const scale = width / 600; // Approximate width of a PDF page at scale 1.0
-        const dataUrl = await renderPageToDataUrl({ url, localPath, page, scale });
+        const dataUrl = await renderPageToDataUrl({ url, localPath, base64Data, page, scale });
         
         if (isMounted) {
           setPreviewUrl(dataUrl);
@@ -58,7 +59,7 @@ export function PDFPagePreview({ url, localPath, page, width = 200 }: PDFPagePre
     return () => {
       isMounted = false;
     };
-  }, [url, localPath, page, width]);
+  }, [url, localPath, base64Data, page, width]);
 
   return (
     <div className="relative w-full h-full min-h-[200px] bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">

@@ -35,18 +35,14 @@ export function PdfPreviewModal({ document, isOpen, onClose }: PdfPreviewModalPr
   };
 
   const openFullDocument = () => {
-    // Open the document at the specific page
-    if (document.localPath) {
-      // For local files, we might need a different approach depending on your app's architecture
-      // This could open in a new tab if the file is accessible via URL, or use a custom viewer
-      window.open(`${document.localPath}`, '_blank');
-    } else {
+    // Open the document at the specific page if a URL is available
+    if (document.url) {
       window.open(`${document.url}#page=${currentPage}`, '_blank');
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-blaTranscript_03_Orphan_Drug_Developmentck/50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg w-[110vh] h-[90vh] flex flex-col relative">
         {/* Close button */}
         <button 
@@ -66,7 +62,7 @@ export function PdfPreviewModal({ document, isOpen, onClose }: PdfPreviewModalPr
         <div className="flex-1 p-8 overflow-auto">
           <PDFPagePreview 
             url={document.url} 
-            localPath="/test/PDF_003_BCG-report-NYCHA-Key-Findings-and-Recommendations-8-15-12vFinal.pdf"
+            base64Data={document.array_buffer}
             page={currentPage} 
             width={1200} 
           />
@@ -96,7 +92,11 @@ export function PdfPreviewModal({ document, isOpen, onClose }: PdfPreviewModalPr
             />
           </Button>
           
-          <Button onClick={openFullDocument} className="px-4">
+          <Button 
+            onClick={openFullDocument} 
+            disabled={!document.url}
+            className="px-4"
+          >
             Open Full Doc
           </Button>
           

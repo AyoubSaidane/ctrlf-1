@@ -11,31 +11,51 @@ export const configurePdfjs = async () => {
 };
 
 interface RenderPageOptions {
-  url: string;
+  url?: string;
   localPath?: string;
+  base64Data?: string;
   page: number;
   scale: number;
 }
 
-export const renderPageToDataUrl = async ({ url, localPath, page, scale }: RenderPageOptions): Promise<string> => {
+// Helper function to convert base64 to ArrayBuffer
+export const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
+  const binaryString = window.atob(base64);
+  const length = binaryString.length;
+  const bytes = new Uint8Array(length);
+  
+  for (let i = 0; i < length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  
+  return bytes.buffer;
+};
+
+export const renderPageToDataUrl = async ({ url, localPath, base64Data, page, scale }: RenderPageOptions): Promise<string> => {
   const pdfjs = await configurePdfjs();
   if (!pdfjs) throw new Error('PDF.js could not be initialized');
 
   try {
     let pdfDocument;
     
-    if (localPath) {
+    if (base64Data) {
+      // Handle base64 encoded data from API
+      const arrayBuffer = base64ToArrayBuffer(base64Data);
+      pdfDocument = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+    } else if (localPath) {
       // Handle local file
       const response = await fetch(localPath);
-      const arrayBuffer = await response.arrayBuffer();
-      pdfDocument = await pdfjs.getDocument({ data: arrayBuffer }).promise;
-    } else {
+      const buffer = await response.arrayBuffer();
+      pdfDocument = await pdfjs.getDocument({ data: buffer }).promise;
+    } else if (url) {
       // Handle remote URL
       pdfDocument = await pdfjs.getDocument({
         url,
         disableAutoFetch: true,
         disableStream: true,
       }).promise;
+    } else {
+      throw new Error('No PDF source provided');
     }
 
     const pdfPage = await pdfDocument.getPage(page);

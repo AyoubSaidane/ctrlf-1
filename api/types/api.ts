@@ -5,8 +5,9 @@ export interface QueryRequest {
 export interface Document {
   title: string;
   url: string;
-  localPath: string;
+  localPath?: string; // Made optional
   page: number;
+  array_buffer?: string; // Base64-encoded PDF data
 }
 
 export interface ParsedResponse {
